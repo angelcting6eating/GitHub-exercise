@@ -1,3 +1,6 @@
+
+import os
+
 import pandas as pd
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 from Bio.Seq import Seq
@@ -5,12 +8,20 @@ from Bio.SeqRecord import SeqRecord
 from Bio import SeqIO
 from scipy.stats import linregress
 
+
 # -----------------------------
 # Read sequences
 # -----------------------------
 
-file_path = "input.fas"
-sequences = list(SeqIO.parse(file_path, "fastaa"))
+# file_path = input(/Users/angelachow/mysterymeat_report/sequences_by_outlet/outlet_01/seq013.fasta)
+
+file_path = input("Enter the path to the FASTA file: ")
+if os.path.exists(file_path):
+    print(f"File found: {file_path}")
+else:
+    print(f"File not found: {file_path}")
+    exit(1)
+sequences = list(SeqIO.parse(file_path, "fasta"))
 
 # -----------------------------
 # Translate DNA sequences to proteins (longest ORF)
@@ -35,7 +46,7 @@ for record in sequences:
         # Split translated protein at stop codons ("*").
         # This gives fragments of amino acids between stop codons.
         fragments = str(protein).split("*")
-        longest_in_frame = maxx(fragments, key=len)
+        longest_in_frame = max(fragments, key=len)
 
         # Keep track of the longest ORF found so far across all frames
         if len(longest_in_frame) > len(best_orf):
@@ -62,7 +73,8 @@ for record in sequences:
 # -----------------------------
 # Write translated sequences
 # -----------------------------
-SeqIO.write(aa_sequences, "translated.fas", "fasta")
+SeqIO.write(
+    aa_sequences, "/Users/angelachow/mysterymeat_report/translated.fas", "fasta")
 
 # -----------------------------
 # Protein statistics
@@ -78,7 +90,7 @@ for record in aa_sequences:
     if ambiguous_count > 0:
         continue  # skip sequences with ambiguous sites
 
-    aa_freqs = prot.get_amino_acids_percent()
+    aa_freqs = prot.amino_acids_percent
 
     row = {
         "name": record.name,
