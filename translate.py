@@ -1,4 +1,6 @@
 
+import os
+
 import pandas as pd
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 from Bio.Seq import Seq
@@ -11,7 +13,14 @@ from scipy.stats import linregress
 # Read sequences
 # -----------------------------
 
-file_path = "/Users/angelachow/mysterymeat_report/sequences_by_outlet/outlet_01/seq013.fasta"
+# file_path = input(/Users/angelachow/mysterymeat_report/sequences_by_outlet/outlet_01/seq013.fasta)
+
+file_path = input("Enter the path to the FASTA file: ")
+if os.path.exists(file_path):
+    print(f"File found: {file_path}")
+else:
+    print(f"File not found: {file_path}")
+    exit(1)
 sequences = list(SeqIO.parse(file_path, "fasta"))
 
 # -----------------------------
